@@ -1,0 +1,1101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AgriBlu - The Future of Farming</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Roboto:wght@300;400;500&display=swap" rel="stylesheet">
+    
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Custom Tailwind Configuration -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'agri-dark': '#2A2E34',
+                        'agri-green': '#4CAF50',
+                        'agri-blue': '#00BCD4',
+                    },
+                    fontFamily: {
+                        'heading': ['Poppins', 'sans-serif'],
+                        'body': ['Roboto', 'sans-serif'],
+                    },
+                    animation: {
+                        'flow-up': 'flowUp 15s linear infinite',
+                        'flow-down': 'flowDown 15s linear infinite',
+                        'float': 'float 6s ease-in-out infinite',
+                        'draw-line': 'drawLine 2s ease-out forwards',
+                        'pulse-once': 'pulse 0.5s ease-out',
+                        'button-pulse': 'buttonPulse 0.4s ease-out',
+                    },
+                    keyframes: {
+                        flowUp: {
+                            '0%': { transform: 'translateY(100vh) translateX(0) rotate(0deg)', opacity: '0' },
+                            '10%': { opacity: '0.7' },
+                            '90%': { opacity: '0.7' },
+                            '100%': { transform: 'translateY(-100vh) translateX(var(--horizontal-drift, 0px)) rotate(360deg)', opacity: '0' }
+                        },
+                        flowDown: {
+                            '0%': { transform: 'translateY(-100vh) translateX(0) rotate(0deg)', opacity: '0' },
+                            '10%': { opacity: '0.7' },
+                            '90%': { opacity: '0.7' },
+                            '100%': { transform: 'translateY(100vh) translateX(var(--horizontal-drift, 0px)) rotate(-360deg)', opacity: '0' }
+                        },
+                        float: {
+                            '0%, 100%': { transform: 'translateY(0)' },
+                            '50%': { transform: 'translateY(-20px)' }
+                        },
+                        drawLine: {
+                            '0%': { strokeDashoffset: '1000' },
+                            '100%': { strokeDashoffset: '0' }
+                        },
+                        pulse: {
+                            '0%': { transform: 'scale(1)' },
+                            '50%': { transform: 'scale(1.05)' },
+                            '100%': { transform: 'scale(1)' }
+                        },
+                        buttonPulse: {
+                            '0%': { transform: 'scale(1)' },
+                            '50%': { transform: 'scale(0.92)' },
+                            '100%': { transform: 'scale(1)' }
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <style>
+        /* Custom styles for animations and effects - Optimized for cPanel */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: #2A2E34;
+            color: white;
+            overflow-x: hidden;
+        }
+        
+        .hero-animation {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            z-index: 0;
+            pointer-events: none;
+        }
+        
+        .flow-line {
+            position: absolute;
+            background: linear-gradient(to top, transparent, rgba(0, 188, 212, 0.7), transparent);
+            animation: flowUp 15s linear infinite;
+        }
+        
+        .flow-line:nth-child(odd) {
+            background: linear-gradient(to top, transparent, rgba(76, 175, 80, 0.7), transparent);
+        }
+        
+        .flow-line[data-direction="down"] {
+            animation: flowDown 15s linear infinite;
+        }
+        
+        .water-droplet {
+            position: absolute;
+            width: 6px;
+            height: 6px;
+            background: rgba(0, 188, 212, 0.6);
+            border-radius: 50%;
+            animation: bounce 2s ease-in-out infinite;
+        }
+        
+        .energy-particle {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: rgba(76, 175, 80, 0.8);
+            border-radius: 50%;
+            animation: float 3s ease-in-out infinite;
+        }
+        
+        .btn-press {
+            transition: all 0.2s ease;
+            position: relative;
+            overflow: hidden;
+            cursor: pointer;
+        }
+        
+        .btn-press:active {
+            transform: scale(0.95);
+        }
+        
+        .btn-press::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.3);
+            transform: translate(-50%, -50%);
+            transition: width 0.3s, height 0.3s;
+        }
+        
+        .btn-press.clicked::before {
+            width: 200px;
+            height: 200px;
+        }
+        
+        .btn-animate {
+            animation: buttonPulse 0.4s ease-out;
+        }
+        
+        .nav-link {
+            position: relative;
+            transition: color 0.3s ease;
+        }
+        
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background-color: #4CAF50;
+            transition: width 0.3s ease;
+        }
+        
+        .nav-link:hover::after {
+            width: 100%;
+        }
+        
+        .card-hover {
+            transition: all 0.3s ease;
+        }
+        
+        .card-hover:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(76, 175, 80, 0.3);
+        }
+        
+        /* Animation classes */
+        .animate-fade-in {
+            animation: fadeIn 0.8s ease-out forwards;
+        }
+        
+        .animate-slide-in-up {
+            animation: slideInUp 0.8s ease-out forwards;
+        }
+        
+        .animate-scale-in {
+            animation: scaleIn 0.6s ease-out forwards;
+        }
+        
+        .animate-number-change {
+            animation: numberChange 0.6s ease-out forwards;
+        }
+        
+        .animate-grow {
+            animation: grow 1s ease-out forwards;
+        }
+        
+        .animate-bounce {
+            animation: bounce 2s ease-in-out infinite;
+        }
+        
+        .animate-pulse-once {
+            animation: pulse 0.5s ease-out;
+        }
+        
+        /* Additional keyframes */
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        @keyframes slideInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        @keyframes scaleIn {
+            from {
+                opacity: 0;
+                transform: scale(0.8);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+        
+        @keyframes numberChange {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.2); }
+            100% { transform: scale(1); }
+        }
+        
+        @keyframes grow {
+            from { transform: scale(0.8); }
+            to { transform: scale(1); }
+        }
+        
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+        
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 10px;
+        }
+        
+        ::-webkit-scrollbar-track {
+            background: #2A2E34;
+        }
+        
+        ::-webkit-scrollbar-thumb {
+            background: #4CAF50;
+            border-radius: 5px;
+        }
+        
+        ::-webkit-scrollbar-thumb:hover {
+            background: #45a049;
+        }
+        
+        /* Responsive fixes */
+        @media (max-width: 768px) {
+            .hero-title {
+                font-size: 2.5rem !important;
+            }
+            
+            .hero-subtitle {
+                font-size: 1.1rem !important;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Animated Background Lines for Hero Section -->
+    <div class="hero-animation" id="heroAnimation"></div>
+    
+    <!-- Header/Navigation Bar -->
+    <header class="fixed top-0 w-full bg-gray-800 z-100 border-b border-gray-600 shadow-lg">
+        <nav class="container mx-auto px-6 py-4 flex justify-between items-center">
+            <!-- Logo -->
+            <button 
+                onclick="window.location.reload()" 
+                class="flex items-center space-x-2 hover:scale-105 transition-transform duration-300 focus:outline-none focus:ring-2 focus:ring-agri-green rounded-lg p-1 btn-press"
+                aria-label="Refresh page"
+            >
+                <div class="w-12 h-12 rounded-full bg-gradient-to-br from-agri-green to-agri-blue flex items-center justify-center animate-pulse shadow-lg relative overflow-hidden">
+                    <!-- Circular emblem with leaf, stripes, and wave -->
+                    <svg class="w-8 h-8 absolute inset-0 m-auto" viewBox="0 0 100 100">
+                        <!-- Green leaf -->
+                        <path d="M50 20 Q30 40 35 60 Q40 75 50 80 Q60 75 65 60 Q70 40 50 20" 
+                              fill="#4CAF50" opacity="0.9"/>
+                        <!-- Green stripes (farmland) -->
+                        <rect x="20" y="70" width="60" height="3" fill="#4CAF50" opacity="0.7"/>
+                        <rect x="20" y="76" width="60" height="3" fill="#4CAF50" opacity="0.7"/>
+                        <rect x="20" y="82" width="60" height="3" fill="#4CAF50" opacity="0.7"/>
+                        <!-- Blue wave pattern (water) -->
+                        <path d="M15 90 Q25 85 35 90 T55 90 T75 90 T95 90" 
+                              stroke="#00BCD4" strokeWidth="3" fill="none" opacity="0.8"/>
+                        <path d="M10 95 Q20 90 30 95 T50 95 T70 95 T90 95" 
+                              stroke="#00BCD4" strokeWidth="2" fill="none" opacity="0.6"/>
+                    </svg>
+                </div>
+                <div class="flex flex-col">
+                    <span class="font-heading text-xl font-bold">
+                        <span class="text-agri-green" style="color: '#4CAF50 !important'">Agri</span>
+                        <span class="text-agri-blue" style="color: '#00BCD4 !important'">Blu</span>
+                    </span>
+                    <span class="text-xs text-gray-400 font-medium">Growing for you</span>
+                </div>
+            </button>
+            
+            <!-- Navigation Links -->
+            <div class="hidden md:flex items-center space-x-8">
+                <a href="#why" class="nav-link text-white hover:text-agri-green transition-colors duration-300 font-medium bg-gray-700 px-4 py-2 rounded-lg">The Why</a>
+                <a href="#technology" class="nav-link text-white hover:text-agri-green transition-colors duration-300 font-medium bg-gray-700 px-4 py-2 rounded-lg">The How</a>
+                <a href="#benefits" class="nav-link text-white hover:text-agri-green transition-colors duration-300 font-medium bg-gray-700 px-4 py-2 rounded-lg">Benefits</a>
+                <a href="#contact" class="nav-link text-white hover:text-agri-green transition-colors duration-300 font-medium bg-gray-700 px-4 py-2 rounded-lg">Contact</a>
+                <button class="bg-agri-green hover:bg-green-600 text-white font-bold py-3 px-8 rounded-full transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-agri-green/30 btn-press">
+                    Request a Demo
+                </button>
+            </div>
+            
+            <!-- Mobile Menu Button -->
+            <button class="md:hidden text-white focus:outline-none bg-gray-700 p-2 rounded-lg btn-press" id="mobileMenuBtn">
+                <i class="fas fa-bars text-xl"></i>
+            </button>
+        </nav>
+        
+        <!-- Mobile Menu -->
+        <div class="hidden md:hidden bg-gray-800" id="mobileMenu">
+            <div class="px-6 py-4 space-y-3 border-t border-gray-600">
+                <a href="#why" class="block text-white hover:text-agri-green py-2 font-medium bg-gray-700 px-4 py-2 rounded-lg">The Why</a>
+                <a href="#technology" class="block text-white hover:text-agri-green py-2 font-medium bg-gray-700 px-4 py-2 rounded-lg">The How</a>
+                <a href="#benefits" class="block text-white hover:text-agri-green py-2 font-medium bg-gray-700 px-4 py-2 rounded-lg">Benefits</a>
+                <a href="#contact" class="block text-white hover:text-agri-green py-2 font-medium bg-gray-700 px-4 py-2 rounded-lg">Contact</a>
+                <button class="bg-agri-green hover:bg-green-600 text-white font-bold py-3 px-8 rounded-full w-full transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-agri-green/30 btn-press">
+                    Request a Demo
+                </button>
+            </div>
+        </div>
+    </header>
+    
+    <!-- Hero Section -->
+    <section class="relative min-h-screen flex items-center justify-center pt-24 pb-10 text-agri-dark">
+        <div class="container mx-auto px-6 text-center relative z-10">
+            <h1 class="hero-title font-heading text-4xl md:text-6xl font-bold mb-6 text-black">
+                AgriBlu: "Growing for you"
+            </h1>
+            <p class="hero-subtitle font-body text-lg md:text-xl max-w-3xl mx-auto mb-4 text-black">
+                The future of indoor CEA farming is here!
+            </p>
+            <p class="hero-subtitle font-body text-lg md:text-xl max-w-3xl mx-auto mb-12 text-black">
+                Indoor farming rebooted with unparalleled levels of efficiency.
+            </p>
+            <div class="hero-buttons flex flex-col sm:flex-row justify-center gap-6 relative z-10">
+                <a href="#contact" onclick="handleSmoothScroll(event)" class="bg-green-500 hover:bg-green-600 text-white font-bold py-4 px-10 rounded-full transition-all duration-300 transform hover:scale-105 inline-block relative z-10 btn-press">
+                    Get Started
+                </a>
+                <a href="#technology" onclick="handleSmoothScroll(event)" class="bg-gray-800 hover:bg-gray-900 text-white font-bold py-4 px-10 rounded-full transition-all duration-300 transform hover:scale-105 inline-block relative z-10 btn-press">
+                    Learn More
+                </a>
+            </div>
+        </div>
+        
+        <!-- Hero Illustration -->
+        <div class="absolute bottom-10 left-1/2 transform -translate-x-1/2 w-full max-w-4xl mx-auto px-6">
+            <div class="relative h-64 flex items-center justify-center">
+                <!-- Animated plant icon -->
+                <div class="text-8xl text-agri-green opacity-20 animate-float">
+                    <i class="fas fa-seedling"></i>
+                </div>
+                <!-- Water drops -->
+                <div class="absolute top-10 left-1/4 text-4xl text-agri-blue opacity-30 animate-bounce" style="animationDelay: '0.5s'">
+                    <i class="fas fa-tint"></i>
+                </div>
+                <div class="absolute top-20 right-1/4 text-3xl text-agri-blue opacity-30 animate-bounce" style="animationDelay: '1s'">
+                    <i class="fas fa-tint"></i>
+                </div>
+                <div class="absolute bottom-10 left-1/3 text-2xl text-agri-blue opacity-30 animate-bounce" style="animationDelay: '1.5s'">
+                    <i class="fas fa-tint"></i>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- The Why Section -->
+    <section id="why" class="py-20 bg-white relative overflow-hidden">
+        <!-- Energy Particles Background -->
+        <div class="absolute inset-0 pointer-events-none" id="energyParticles"></div>
+        
+        <div class="container mx-auto px-6">
+            <h2 id="whyTitle" class="font-heading text-3xl md:text-4xl font-bold text-center mb-16 text-black opacity-0">
+                The Why: Vertical Farming's Energy Problem
+            </h2>
+            
+            <div class="max-w-4xl mx-auto">
+                <div id="whyContent" class="bg-gray-50 rounded-xl p-8 border-l-4 border-agri-green shadow-lg opacity-0 transform translate-y-10">
+                    <p class="font-body text-lg text-gray-800 mb-6 leading-relaxed">
+                        Indoor and vertical farming have struggled financially over the past two years, primarily because of high energy costs. These expenses make it difficult for farms to become profitable.
+                    </p>
+                    <p class="font-body text-lg text-gray-800 leading-relaxed">
+                        Having been involved in the indoor growing industry since its commercial beginnings in 2014, we've developed a unique approach that slashes energy consumption by up to 50%. Our solution addresses the core issue preventing many of these operations from succeeding.
+                    </p>
+                </div>
+                
+                <!-- Energy Reduction Visualization -->
+                <div class="mt-12 bg-white rounded-xl p-8 shadow-lg border border-gray-200">
+                    <h3 class="font-heading text-2xl font-bold text-center mb-8 text-gray-800">
+                        Energy Consumption Reduction
+                    </h3>
+                    
+                    <div class="relative">
+                        <!-- Energy Meter -->
+                        <div class="mb-8">
+                            <div class="flex justify-between items-center mb-4">
+                                <span class="text-lg font-semibold text-gray-700">After AgriBlu</span>
+                                <span class="text-lg font-semibold text-gray-700">Before AgriBlu</span>
+                            </div>
+                            
+                            <div class="relative h-12 bg-gray-200 rounded-full overflow-hidden">
+                                <div id="energyMeter" class="absolute top-0 left-0 h-full rounded-full transition-all duration-1000 ease-in-out" style="width: '100%', background: '#ef4444'"></div>
+                                
+                                <!-- Percentage Labels -->
+                                <div class="absolute inset-0 flex items-center justify-between px-4">
+                                    <span class="text-white font-bold text-lg z-10 relative opacity-0" id="finalPercentage">50%</span>
+                                    <span class="text-white font-bold text-lg z-10 relative">100%</span>
+                                </div>
+                                
+                                <!-- Slash Effect -->
+                                <div id="energySlash" class="absolute inset-0 flex items-center justify-center pointer-events-none">
+                                    <div class="w-full h-1 bg-red-500 transform -rotate-45 opacity-0"></div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Energy Savings Highlight -->
+                        <div class="text-center">
+                            <div class="inline-flex items-center justify-center bg-green-100 rounded-full px-6 py-3">
+                                <span class="text-3xl font-bold text-green-600 mr-2">50%</span>
+                                <span class="text-lg text-green-700 font-semibold">Energy Savings</span>
+                            </div>
+                        </div>
+                        
+                        <!-- Energy Flow Visualization -->
+                        <div class="mt-8 grid grid-cols-2 gap-8">
+                            <div class="text-center">
+                                <button 
+                                    onclick="setEnergyMeterState('before')"
+                                    class="focus:outline-none focus:ring-2 focus:ring-red-500 rounded-lg p-2 hover:bg-red-50 transition-colors duration-300 btn-press"
+                                    aria-label="Show Traditional Energy Use"
+                                >
+                                    <div class="relative h-24 flex items-center justify-center">
+                                        <div class="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center">
+                                            <i class="fas fa-bolt text-red-500 text-2xl"></i>
+                                        </div>
+                                        <div class="absolute -top-2 -right-2 w-8 h-8 bg-red-500 rounded-full flex items-center justify-center text-white font-bold text-sm">
+                                            high
+                                        </div>
+                                    </div>
+                                </button>
+                                <p class="mt-4 text-gray-600 font-medium">Traditional Energy Use</p>
+                            </div>
+                            
+                            <div class="text-center">
+                                <button 
+                                    onclick="setEnergyMeterState('after')"
+                                    class="focus:outline-none focus:ring-2 focus:ring-green-500 rounded-lg p-2 hover:bg-green-50 transition-colors duration-300 btn-press"
+                                    aria-label="Show AgriBlu Energy Use"
+                                >
+                                    <div class="relative h-24 flex items-center justify-center">
+                                        <div class="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center">
+                                            <i class="fas fa-leaf text-green-500 text-2xl"></i>
+                                        </div>
+                                        <div class="absolute -top-2 -right-2 w-8 h-8 bg-green-500 rounded-full flex items-center justify-center text-white font-bold text-sm">
+                                            low
+                                        </div>
+                                    </div>
+                                </button>
+                                <p class="mt-4 text-gray-600 font-medium">AgriBlu Energy Use</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Technology Section -->
+    <section id="technology" class="py-20 bg-gray-900 relative overflow-hidden">
+        <!-- Water Droplets Background -->
+        <div class="absolute inset-0 pointer-events-none" id="waterDroplets"></div>
+        
+        <div class="container mx-auto px-6 relative z-10">
+            <h2 class="font-heading text-3xl md:text-4xl font-bold text-center mb-16 opacity-0 text-white" id="techTitle">
+                The How
+            </h2>
+            
+            <div class="flex flex-col lg:flex-row items-center justify-between gap-12">
+                <div class="w-full lg:w-1/2 grid grid-cols-1 md:grid-cols-3 gap-8">
+                    <!-- Step 1 -->
+                    <div class="step-card text-center opacity-0 transform translate-y-20">
+                        <div class="w-24 h-24 bg-agri-blue bg-opacity-20 rounded-full flex items-center justify-center mx-auto mb-4 transform transition-all duration-500 hover:scale-110 hover:bg-agri-blue bg-opacity-30">
+                            <i class="fas fa-tint text-agri-blue text-4xl"></i>
+                        </div>
+                        <h3 class="font-heading text-xl font-semibold mb-2">Mist Delivery</h3>
+                        <p class="text-gray-400">Precision nutrient mist is delivered directly to plant roots at timed intervals.</p>
+                    </div>
+                    
+                    <!-- Step 2 -->
+                    <div class="step-card text-center opacity-0 transform translate-y-20">
+                        <div class="w-24 h-24 bg-agri-green bg-opacity-20 rounded-full flex items-center justify-center mx-auto mb-4 transform transition-all duration-500 hover:scale-110 hover:bg-agri-green bg-opacity-30">
+                            <i class="fas fa-seedling text-agri-green text-4xl"></i>
+                        </div>
+                        <h3 class="font-heading text-xl font-semibold mb-2">Root Growth</h3>
+                        <p class="text-gray-400">Plants develop robust root systems in the oxygen-rich environment.</p>
+                    </div>
+                    
+                    <!-- Step 3 -->
+                    <div class="step-card text-center opacity-0 transform translate-y-20">
+                        <div class="w-24 h-24 bg-agri-blue bg-opacity-20 rounded-full flex items-center justify-center mx-auto mb-4 transform transition-all duration-500 hover:scale-110 hover:bg-agri-blue bg-opacity-30">
+                            <i class="fas fa-chart-line text-agri-blue text-4xl"></i>
+                        </div>
+                        <h3 class="font-heading text-xl font-semibold mb-2">Data Monitoring</h3>
+                        <p class="text-gray-400">Advanced sensors track growth metrics and optimize conditions in real-time.</p>
+                    </div>
+                </div>
+                
+                <!-- Animation Placeholder -->
+                <div class="w-full lg:w-1/2 flex justify-center items-center h-96 bg-gray-800 rounded-xl">
+                    <div class="text-center">
+                        <i class="fas fa-seedling text-6xl text-agri-green mb-4"></i>
+                        <p class="text-gray-400">Technology Animation</p>
+                        <p class="text-sm text-gray-500">Interactive plant growth visualization</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Benefits Section -->
+    <section id="benefits" class="py-20 bg-agri-dark">
+        <div class="container mx-auto px-6">
+            <h2 class="font-heading text-3xl md:text-4xl font-bold text-center mb-16">Why Choose AgriBlu</h2>
+            
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <!-- Card 1: Sustainable -->
+                <div class="bg-gray-900 rounded-xl p-6 border-2 border-gray-800 card-hover">
+                    <div class="w-16 h-16 bg-agri-green bg-opacity-20 rounded-full flex items-center justify-center mb-4">
+                        <i class="fas fa-water text-agri-green text-2xl"></i>
+                    </div>
+                    <h3 class="font-heading text-2xl font-bold mb-3">95% Less Water</h3>
+                    <p class="text-gray-400 mb-4">Our closed-loop system recycles water, drastically reducing your environmental footprint.</p>
+                    <div class="mt-4">
+                        <div class="flex items-center text-agri-green">
+                            <span class="mr-2">Water Efficiency</span>
+                            <i class="fas fa-arrow-up"></i>
+                        </div>
+                        <div class="w-full bg-gray-700 rounded-full h-2 mt-2">
+                            <div class="bg-agri-green h-2 rounded-full" style="width: 95%"></div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Card 2: Efficient -->
+                <div class="bg-gray-900 rounded-xl p-6 border-2 border-gray-800 card-hover">
+                    <div class="w-16 h-16 bg-agri-blue bg-opacity-20 rounded-full flex items-center justify-center mb-4">
+                        <i class="fas fa-bolt text-agri-blue text-2xl"></i>
+                    </div>
+                    <h3 class="font-heading text-2xl font-bold mb-3">50% Less Energy</h3>
+                    <p class="text-gray-400 mb-4">Revolutionary aeroponics technology cuts energy consumption while maximizing yields.</p>
+                    <div class="mt-4">
+                        <div class="flex items-center text-agri-blue">
+                            <span class="mr-2">Energy Savings</span>
+                            <i class="fas fa-arrow-down"></i>
+                        </div>
+                        <div class="w-full bg-gray-700 rounded-full h-2 mt-2">
+                            <div class="bg-agri-blue h-2 rounded-full" style="width: 50%"></div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Card 3: Productive -->
+                <div class="bg-gray-900 rounded-xl p-6 border-2 border-gray-800 card-hover">
+                    <div class="w-16 h-16 bg-agri-green bg-opacity-20 rounded-full flex items-center justify-center mb-4">
+                        <i class="fas fa-chart-line text-agri-green text-2xl"></i>
+                    </div>
+                    <h3 class="font-heading text-2xl font-bold mb-3">3x More Yield</h3>
+                    <p class="text-gray-400 mb-4">Optimized growing conditions produce higher yields in less space and time.</p>
+                    <div class="mt-4">
+                        <div class="flex items-center text-agri-green">
+                            <span class="mr-2">Growth Rate</span>
+                            <i class="fas fa-arrow-up"></i>
+                        </div>
+                        <div class="w-full bg-gray-700 rounded-full h-2 mt-2">
+                            <div class="bg-agri-green h-2 rounded-full" style="width: 75%"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Contact Section -->
+    <section id="contact" class="py-20 bg-gray-800">
+        <div class="container mx-auto px-6">
+            <h2 class="font-heading text-3xl md:text-4xl font-bold text-center mb-16">Get Started with AgriBlu</h2>
+            
+            <div class="max-w-2xl mx-auto">
+                <div class="bg-gray-900 rounded-xl p-8 shadow-xl">
+                    <form id="contactForm" class="space-y-6">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-300 mb-2">Name</label>
+                            <input type="text" required class="w-full px-4 py-3 bg-gray-800 border border-gray-700 rounded-lg focus:ring-2 focus:ring-agri-green focus:border-transparent text-white">
+                        </div>
+                        
+                        <div>
+                            <label class="block text-sm font-medium text-gray-300 mb-2">Email</label>
+                            <input type="email" required class="w-full px-4 py-3 bg-gray-800 border border-gray-700 rounded-lg focus:ring-2 focus:ring-agri-green focus:border-transparent text-white">
+                        </div>
+                        
+                        <div>
+                            <label class="block text-sm font-medium text-gray-300 mb-2">Company</label>
+                            <input type="text" class="w-full px-4 py-3 bg-gray-800 border border-gray-700 rounded-lg focus:ring-2 focus:ring-agri-green focus:border-transparent text-white">
+                        </div>
+                        
+                        <div>
+                            <label class="block text-sm font-medium text-gray-300 mb-2">Message</label>
+                            <textarea rows="4" class="w-full px-4 py-3 bg-gray-800 border border-gray-700 rounded-lg focus:ring-2 focus:ring-agri-green focus:border-transparent text-white"></textarea>
+                        </div>
+                        
+                        <button type="submit" class="w-full bg-agri-green hover:bg-green-600 text-white font-bold py-3 px-6 rounded-lg transition-colors duration-300 btn-press">
+                            Request a Demo
+                        </button>
+                    </form>
+                    
+                    <div id="formMessage" class="hidden mt-4 p-4 bg-green-100 text-green-700 rounded-lg">
+                        Thank you for your interest! We'll contact you soon.
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Footer -->
+    <footer class="bg-gray-900 py-8 border-t border-gray-800">
+        <div class="container mx-auto px-6">
+            <div class="flex flex-col md:flex-row justify-between items-center">
+                <div class="flex items-center space-x-2 mb-4 md:mb-0">
+                    <div class="w-8 h-8 rounded-full bg-gradient-to-br from-agri-green to-agri-blue flex items-center justify-center">
+                        <i class="fas fa-seedling text-white text-sm"></i>
+                    </div>
+                    <span class="font-heading text-lg font-bold text-white">AgriBlu</span>
+                </div>
+                
+                <div class="text-gray-400 text-sm">
+                    © 2024 AgriBlu. Growing for you.
+                </div>
+                
+                <div class="flex space-x-4 mt-4 md:mt-0">
+                    <a href="#" class="text-gray-400 hover:text-agri-green transition-colors">
+                        <i class="fab fa-facebook text-xl"></i>
+                    </a>
+                    <a href="#" class="text-gray-400 hover:text-agri-green transition-colors">
+                        <i class="fab fa-twitter text-xl"></i>
+                    </a>
+                    <a href="#" class="text-gray-400 hover:text-agri-green transition-colors">
+                        <i class="fab fa-linkedin text-xl"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Initialize animations when page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('Initializing AgriBlu animations...');
+            
+            // Create flow lines
+            createFlowLines();
+            
+            // Set up intersection observers for scroll animations
+            setupScrollAnimations();
+            
+            // Set up button click animations
+            setupButtonAnimations();
+            
+            // Set up mobile menu
+            setupMobileMenu();
+            
+            // Set up contact form
+            setupContactForm();
+            
+            // Set up smooth scrolling
+            setupSmoothScrolling();
+            
+            console.log('AgriBlu animations initialized successfully');
+        });
+        
+        // Create animated background lines for hero section
+        function createFlowLines() {
+            const heroAnimation = document.getElementById('heroAnimation');
+            if (!heroAnimation) {
+                console.log('Hero animation container not found');
+                return;
+            }
+            
+            const lineCount = 50;
+            
+            for (let i = 0; i < lineCount; i++) {
+                const line = document.createElement('div');
+                line.className = 'flow-line';
+                line.style.left = Math.random() * 100 + '%';
+                
+                // Add random direction for scatter effect
+                const direction = Math.random() > 0.5 ? 'up' : 'down';
+                const angle = (Math.random() - 0.5) * 90;
+                const horizontalDrift = (Math.random() - 0.5) * 100;
+                
+                line.setAttribute('data-direction', direction);
+                line.style.setProperty('--angle', angle + 'deg');
+                line.style.setProperty('--horizontal-drift', horizontalDrift + 'px');
+                
+                // Set animation based on direction
+                const duration = 15 + Math.random() * 10;
+                const delay = Math.random() * 0.3;
+                
+                if (direction === 'down') {
+                    line.style.animation = `flowDown ${duration}s linear infinite`;
+                } else {
+                    line.style.animation = `flowUp ${duration}s linear infinite`;
+                }
+                line.style.animationDelay = delay + 's';
+                
+                // Randomize line properties
+                const lineWidth = 1 + Math.random() * 3;
+                const lineHeight = 50 + Math.random() * 100;
+                const opacity = 0.3 + Math.random() * 0.5;
+                
+                line.style.width = lineWidth + 'px';
+                line.style.height = lineHeight + 'px';
+                line.style.opacity = opacity;
+                
+                heroAnimation.appendChild(line);
+            }
+            console.log('Flow lines created with scatter effect');
+        }
+        
+        // Set up scroll animations using Intersection Observer
+        function setupScrollAnimations() {
+            // Check if IntersectionObserver is supported
+            if (!('IntersectionObserver' in window)) {
+                console.log('IntersectionObserver not supported, using fallback');
+                setTimeout(triggerAllAnimations, 1000);
+                return;
+            }
+            
+            const observerOptions = {
+                root: null,
+                rootMargin: '0px',
+                threshold: 0.4
+            };
+            
+            // Observer for why section
+            const whyObserver = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        console.log('Why section intersecting, triggering animations');
+                        animateWhySection();
+                    }
+                });
+            }, observerOptions);
+            
+            // Observer for technology section
+            const techObserver = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        console.log('Tech section intersecting, triggering animations');
+                        animateTechSection();
+                    }
+                });
+            }, observerOptions);
+            
+            // Observe sections
+            const whySection = document.getElementById('why');
+            const techSection = document.getElementById('technology');
+            
+            if (whySection) whyObserver.observe(whySection);
+            if (techSection) techObserver.observe(techSection);
+            
+            console.log('Intersection observers set up');
+        }
+        
+        // Animate why section
+        function animateWhySection() {
+            const whyTitle = document.getElementById('whyTitle');
+            const whyContent = document.getElementById('whyContent');
+            const energyMeter = document.getElementById('energyMeter');
+            const finalPercentage = document.getElementById('finalPercentage');
+            const energySlash = document.getElementById('energySlash');
+            
+            if (whyTitle) {
+                whyTitle.classList.add('animate-fade-in');
+                whyTitle.style.opacity = '1';
+            }
+            
+            setTimeout(() => {
+                if (whyContent) {
+                    whyContent.classList.add('animate-slide-in-up');
+                    whyContent.style.opacity = '1';
+                    whyContent.style.transform = 'translateY(0)';
+                }
+            }, 300);
+            
+            setTimeout(() => {
+                if (energyMeter) {
+                    energyMeter.style.width = '50%';
+                    energyMeter.style.background = 'linear-gradient(90deg, #22c55e, #16a34a)';
+                }
+            }, 600);
+            
+            setTimeout(() => {
+                if (finalPercentage) {
+                    finalPercentage.style.opacity = '1';
+                    finalPercentage.classList.add('animate-number-change');
+                }
+                if (energySlash) {
+                    const slashDiv = energySlash.querySelector('div');
+                    if (slashDiv) {
+                        slashDiv.style.opacity = '1';
+                    }
+                }
+                createEnergyParticles();
+            }, 1200);
+        }
+        
+        // Animate technology section
+        function animateTechSection() {
+            const techTitle = document.getElementById('techTitle');
+            const stepCards = document.querySelectorAll('.step-card');
+            
+            if (techTitle) {
+                techTitle.classList.add('animate-fade-in');
+                techTitle.style.opacity = '1';
+            }
+            
+            stepCards.forEach((card, index) => {
+                setTimeout(() => {
+                    card.classList.add('animate-slide-in-up');
+                    card.style.opacity = '1';
+                    card.style.transform = 'translateY(0)';
+                }, index * 200);
+            });
+            
+            setTimeout(() => {
+                createWaterDroplets();
+            }, 1000);
+        }
+        
+        // Create energy particles
+        function createEnergyParticles() {
+            const particleContainer = document.getElementById('energyParticles');
+            if (!particleContainer) return;
+            
+            particleContainer.innerHTML = '';
+            
+            for (let i = 0; i < 20; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'energy-particle';
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.top = Math.random() * 100 + '%';
+                particle.style.animationDelay = Math.random() * 2 + 's';
+                particle.style.animationDuration = (2 + Math.random() * 2) + 's';
+                particleContainer.appendChild(particle);
+            }
+        }
+        
+        // Create water droplets
+        function createWaterDroplets() {
+            const dropletContainer = document.getElementById('waterDroplets');
+            if (!dropletContainer) return;
+            
+            dropletContainer.innerHTML = '';
+            
+            for (let i = 0; i < 12; i++) {
+                const droplet = document.createElement('div');
+                droplet.className = 'water-droplet';
+                droplet.style.left = (10 + (i * 7)) + '%';
+                droplet.style.animationDelay = Math.random() * 3 + 's';
+                droplet.style.animationDuration = (2 + Math.random() * 2) + 's';
+                dropletContainer.appendChild(droplet);
+            }
+        }
+        
+        // Set up button click animations
+        function setupButtonAnimations() {
+            const buttons = document.querySelectorAll('.btn-press');
+            buttons.forEach(button => {
+                button.addEventListener('click', function(e) {
+                    animateButtonClick(this);
+                });
+            });
+            console.log('Button animations set up for ' + buttons.length + ' buttons');
+        }
+        
+        // Animate button click
+        function animateButtonClick(button) {
+            button.classList.add('btn-animate');
+            button.classList.add('clicked');
+            
+            setTimeout(() => {
+                button.classList.remove('btn-animate');
+            }, 400);
+            
+            setTimeout(() => {
+                button.classList.remove('clicked');
+            }, 300);
+        }
+        
+        // Set up mobile menu
+        function setupMobileMenu() {
+            const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+            const mobileMenu = document.getElementById('mobileMenu');
+            
+            if (mobileMenuBtn && mobileMenu) {
+                mobileMenuBtn.addEventListener('click', function() {
+                    mobileMenu.classList.toggle('hidden');
+                    animateButtonClick(this);
+                });
+                console.log('Mobile menu set up');
+            }
+        }
+        
+        // Set up contact form
+        function setupContactForm() {
+            const contactForm = document.getElementById('contactForm');
+            const formMessage = document.getElementById('formMessage');
+            
+            if (contactForm && formMessage) {
+                contactForm.addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    
+                    // Show success message
+                    formMessage.classList.remove('hidden');
+                    formMessage.classList.add('animate-pulse-once');
+                    
+                    // Reset form
+                    contactForm.reset();
+                    
+                    // Hide message after 5 seconds
+                    setTimeout(() => {
+                        formMessage.classList.add('hidden');
+                        formMessage.classList.remove('animate-pulse-once');
+                    }, 5000);
+                });
+                console.log('Contact form set up');
+            }
+        }
+        
+        // Set up smooth scrolling
+        function setupSmoothScrolling() {
+            const navLinks = document.querySelectorAll('a[href^="#"]');
+            navLinks.forEach(link => {
+                link.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const targetId = this.getAttribute('href');
+                    const targetElement = document.querySelector(targetId);
+                    
+                    if (targetElement) {
+                        const targetPosition = targetElement.offsetTop - 120;
+                        window.scrollTo({
+                            top: targetPosition,
+                            behavior: 'smooth'
+                        });
+                        
+                        // Animate the clicked link
+                        animateButtonClick(this);
+                        
+                        // Close mobile menu if open
+                        const mobileMenu = document.getElementById('mobileMenu');
+                        if (mobileMenu) {
+                            mobileMenu.classList.add('hidden');
+                        }
+                    }
+                });
+            });
+            console.log('Smooth scrolling set up');
+        }
+        
+        // Handle smooth scroll for hero buttons
+        function handleSmoothScroll(event) {
+            event.preventDefault();
+            const href = event.currentTarget.getAttribute('href');
+            
+            if (href && href.startsWith('#')) {
+                const target = document.querySelector(href);
+                if (target) {
+                    const targetPosition = target.offsetTop - 120;
+                    window.scrollTo({
+                        top: targetPosition,
+                        behavior: 'smooth'
+                    });
+                    
+                    // Animate the clicked element
+                    animateButtonClick(event.currentTarget);
+                }
+            }
+        }
+        
+        // Energy meter state management
+        function setEnergyMeterState(state) {
+            console.log('setEnergyMeterState called with:', state);
+            
+            const energyMeter = document.getElementById('energyMeter');
+            const finalPercentage = document.getElementById('finalPercentage');
+            const energySlash = document.getElementById('energySlash');
+            
+            if (energyMeter) {
+                if (state === 'before') {
+                    energyMeter.style.width = '100%';
+                    energyMeter.style.background = 'linear-gradient(90deg, #ef4444, #dc2626)';
+                    
+                    if (finalPercentage) {
+                        finalPercentage.textContent = '100%';
+                        finalPercentage.style.opacity = '0';
+                    }
+                    if (energySlash) {
+                        const slashDiv = energySlash.querySelector('div');
+                        if (slashDiv) {
+                            slashDiv.style.opacity = '0';
+                        }
+                    }
+                } else {
+                    energyMeter.style.width = '50%';
+                    energyMeter.style.background = 'linear-gradient(90deg, #22c55e, #16a34a)';
+                    
+                    if (finalPercentage) {
+                        finalPercentage.textContent = '50%';
+                        finalPercentage.style.opacity = '1';
+                        finalPercentage.classList.add('animate-number-change');
+                    }
+                    if (energySlash) {
+                        const slashDiv = energySlash.querySelector('div');
+                        if (slashDiv) {
+                            slashDiv.style.opacity = '1';
+                        }
+                    }
+                }
+            }
+        }
+        
+        // Fallback function to trigger all animations
+        function triggerAllAnimations() {
+            console.log('Triggering all animations as fallback');
+            animateWhySection();
+            animateTechSection();
+        }
+        
+        // Add scroll effect to navigation
+        window.addEventListener('scroll', function() {
+            const header = document.querySelector('header');
+            if (header && window.scrollY > 50) {
+                header.classList.add('shadow-lg');
+            } else if (header) {
+                header.classList.remove('shadow-lg');
+            }
+        });
+        
+        // Make energy meter function globally accessible
+        window.setEnergyMeterState = setEnergyMeterState;
+    </script>
+</body>
+</html>

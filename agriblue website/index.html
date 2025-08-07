@@ -1,0 +1,561 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AgriBlu - The Future of Farming</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Roboto:wght@300;400;500&display=swap" rel="stylesheet">
+    
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Custom Tailwind Configuration -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'agri-dark': '#2A2E34',
+                        'agri-green': '#4CAF50',
+                        'agri-blue': '#00BCD4',
+                    },
+                    fontFamily: {
+                        'heading': ['Poppins', 'sans-serif'],
+                        'body': ['Roboto', 'sans-serif'],
+                    },
+                    animation: {
+                        'flow-up': 'flowUp 15s linear infinite',
+                        'float': 'float 6s ease-in-out infinite',
+                        'draw-line': 'drawLine 2s ease-out forwards',
+                        'pulse-once': 'pulse 0.5s ease-out',
+                    },
+                    keyframes: {
+                        flowUp: {
+                            '0%': { transform: 'translateY(100vh) rotate(0deg)', opacity: '0' },
+                            '10%': { opacity: '0.7' },
+                            '90%': { opacity: '0.7' },
+                            '100%': { transform: 'translateY(-100vh) rotate(360deg)', opacity: '0' }
+                        },
+                        float: {
+                            '0%, 100%': { transform: 'translateY(0)' },
+                            '50%': { transform: 'translateY(-20px)' }
+                        },
+                        drawLine: {
+                            '0%': { strokeDashoffset: '1000' },
+                            '100%': { strokeDashoffset: '0' }
+                        },
+                        pulse: {
+                            '0%': { transform: 'scale(1)' },
+                            '50%': { transform: 'scale(1.05)' },
+                            '100%': { transform: 'scale(1)' }
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <style>
+        /* Custom styles for animations and effects */
+        .hero-animation {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            z-index: 0;
+        }
+        
+        .flow-line {
+            position: absolute;
+            width: 2px;
+            height: 100px;
+            background: linear-gradient(to top, transparent, rgba(0, 188, 212, 0.7), transparent);
+            animation: flowUp 15s linear infinite;
+        }
+        
+        .flow-line:nth-child(odd) {
+            background: linear-gradient(to top, transparent, rgba(76, 175, 80, 0.7), transparent);
+        }
+        
+        .card-hover {
+            transition: all 0.3s ease;
+        }
+        
+        .card-hover:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 10px 25px rgba(76, 175, 80, 0.3);
+            border-color: #4CAF50;
+        }
+        
+        .nav-link {
+            position: relative;
+        }
+        
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background-color: #4CAF50;
+            transition: width 0.3s ease;
+        }
+        
+        .nav-link:hover::after {
+            width: 100%;
+        }
+        
+        .root-animation {
+            animation: float 6s ease-in-out infinite;
+        }
+        
+        .mist {
+            opacity: 0;
+            transition: opacity 2s ease-in-out;
+        }
+        
+        .mist.visible {
+            opacity: 0.7;
+        }
+        
+        .line-graph {
+            stroke-dasharray: 1000;
+            stroke-dashoffset: 1000;
+        }
+        
+        .line-graph.animate {
+            animation: drawLine 2s ease-out forwards;
+        }
+        
+        .btn-pulse {
+            transition: all 0.3s ease;
+        }
+        
+        .btn-pulse:active {
+            animation: pulse 0.5s ease-out;
+        }
+        
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 10px;
+        }
+        
+        ::-webkit-scrollbar-track {
+            background: #2A2E34;
+        }
+        
+        ::-webkit-scrollbar-thumb {
+            background: #4CAF50;
+            border-radius: 5px;
+        }
+        
+        ::-webkit-scrollbar-thumb:hover {
+            background: #45a049;
+        }
+    </style>
+</head>
+<body class="font-body text-white bg-agri-dark overflow-x-hidden">
+    <!-- Animated Background Lines for Hero Section -->
+    <div class="hero-animation" id="heroAnimation"></div>
+    
+    <!-- Header/Navigation Bar -->
+    <header class="fixed top-0 w-full bg-agri-dark bg-opacity-90 backdrop-blur-sm z-50 border-b border-gray-700">
+        <nav class="container mx-auto px-6 py-4 flex justify-between items-center">
+            <!-- Logo -->
+            <div class="flex items-center space-x-2">
+                <div class="w-10 h-10 rounded-full bg-gradient-to-br from-agri-green to-agri-blue flex items-center justify-center">
+                    <i class="fas fa-seedling text-white"></i>
+                </div>
+                <span class="font-heading text-xl font-bold text-white">AgriBlu</span>
+            </div>
+            
+            <!-- Navigation Links -->
+            <div class="hidden md:flex items-center space-x-8">
+                <a href="#technology" class="nav-link text-white hover:text-agri-green transition-colors duration-300">Technology</a>
+                <a href="#benefits" class="nav-link text-white hover:text-agri-green transition-colors duration-300">Benefits</a>
+                <a href="#contact" class="nav-link text-white hover:text-agri-green transition-colors duration-300">Contact</a>
+                <button class="bg-agri-green hover:bg-green-600 text-white font-medium py-2 px-6 rounded-full transition-colors duration-300 btn-pulse">
+                    Request a Demo
+                </button>
+            </div>
+            
+            <!-- Mobile Menu Button -->
+            <button class="md:hidden text-white focus:outline-none" id="mobileMenuBtn">
+                <i class="fas fa-bars text-xl"></i>
+            </button>
+        </nav>
+        
+        <!-- Mobile Menu -->
+        <div class="hidden md:hidden bg-agri-dark bg-opacity-95" id="mobileMenu">
+            <div class="px-6 py-4 space-y-3">
+                <a href="#technology" class="block text-white hover:text-agri-green py-2">Technology</a>
+                <a href="#benefits" class="block text-white hover:text-agri-green py-2">Benefits</a>
+                <a href="#contact" class="block text-white hover:text-agri-green py-2">Contact</a>
+                <button class="bg-agri-green hover:bg-green-600 text-white font-medium py-2 px-6 rounded-full w-full transition-colors duration-300 btn-pulse">
+                    Request a Demo
+                </button>
+            </div>
+        </div>
+    </header>
+    
+    <!-- Hero Section -->
+    <section class="relative min-h-screen flex items-center justify-center pt-16">
+        <div class="container mx-auto px-6 text-center relative z-10">
+            <h1 class="font-heading text-4xl md:text-6xl font-bold mb-6 animate-fade-in">
+                AgriBlu: The Future of Farming is Here
+            </h1>
+            <p class="font-body text-lg md:text-xl max-w-3xl mx-auto mb-10 text-gray-300 animate-fade-in delay-300">
+                Revolutionizing agriculture with intelligent aeroponics systems that deliver higher yields with unparalleled efficiency.
+            </p>
+            <div class="flex flex-col sm:flex-row justify-center gap-4 animate-fade-in delay-500">
+                <a href="#contact" class="bg-agri-green hover:bg-green-600 text-white font-medium py-3 px-8 rounded-full transition-all duration-300 transform hover:scale-105 btn-pulse">
+                    Get Started
+                </a>
+                <a href="#technology" class="border-2 border-agri-blue text-agri-blue hover:bg-agri-blue hover:text-white font-medium py-3 px-8 rounded-full transition-all duration-300">
+                    Learn More
+                </a>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Technology Section -->
+    <section id="technology" class="py-20 bg-gray-900">
+        <div class="container mx-auto px-6">
+            <h2 class="font-heading text-3xl md:text-4xl font-bold text-center mb-16">How It Works</h2>
+            
+            <div class="flex flex-col lg:flex-row items-center justify-between gap-12">
+                <!-- Steps -->
+                <div class="w-full lg:w-1/2 grid grid-cols-1 md:grid-cols-3 gap-8">
+                    <!-- Step 1 -->
+                    <div class="text-center">
+                        <div class="w-20 h-20 bg-agri-blue bg-opacity-20 rounded-full flex items-center justify-center mx-auto mb-4">
+                            <i class="fas fa-tint text-agri-blue text-3xl"></i>
+                        </div>
+                        <h3 class="font-heading text-xl font-semibold mb-2">Mist Delivery</h3>
+                        <p class="text-gray-400">Precision nutrient mist is delivered directly to plant roots at timed intervals.</p>
+                    </div>
+                    
+                    <!-- Step 2 -->
+                    <div class="text-center">
+                        <div class="w-20 h-20 bg-agri-green bg-opacity-20 rounded-full flex items-center justify-center mx-auto mb-4">
+                            <i class="fas fa-seedling text-agri-green text-3xl"></i>
+                        </div>
+                        <h3 class="font-heading text-xl font-semibold mb-2">Root Growth</h3>
+                        <p class="text-gray-400">Plants develop robust root systems in the oxygen-rich environment.</p>
+                    </div>
+                    
+                    <!-- Step 3 -->
+                    <div class="text-center">
+                        <div class="w-20 h-20 bg-agri-blue bg-opacity-20 rounded-full flex items-center justify-center mx-auto mb-4">
+                            <i class="fas fa-chart-line text-agri-blue text-3xl"></i>
+                        </div>
+                        <h3 class="font-heading text-xl font-semibold mb-2">Data Monitoring</h3>
+                        <p class="text-gray-400">Advanced sensors track growth metrics and optimize conditions in real-time.</p>
+                    </div>
+                </div>
+                
+                <!-- Animation -->
+                <div class="w-full lg:w-1/2 flex justify-center relative h-80" id="rootAnimationContainer">
+                    <div class="relative w-full h-full flex items-center justify-center">
+                        <!-- Plant Container -->
+                        <div class="relative w-64 h-64">
+                            <!-- Plant -->
+                            <div class="absolute top-0 left-1/2 transform -translate-x-1/2">
+                                <div class="w-4 h-32 bg-agri-green rounded-t-lg root-animation"></div>
+                                <div class="flex justify-center space-x-4 mt-2">
+                                    <div class="w-8 h-16 bg-agri-green rounded-t-lg root-animation" style="animation-delay: 0.2s;"></div>
+                                    <div class="w-8 h-20 bg-agri-green rounded-t-lg root-animation" style="animation-delay: 0.4s;"></div>
+                                    <div class="w-8 h-16 bg-agri-green rounded-t-lg root-animation" style="animation-delay: 0.6s;"></div>
+                                </div>
+                            </div>
+                            
+                            <!-- Roots -->
+                            <div class="absolute top-32 left-1/2 transform -translate-x-1/2">
+                                <svg class="w-64 h-32" viewBox="0 0 200 100">
+                                    <path d="M100,0 Q80,20 60,40 T40,80" stroke="#4CAF50" stroke-width="3" fill="none" class="root-animation" style="animation-delay: 0.8s;"/>
+                                    <path d="M100,0 Q120,20 140,40 T160,80" stroke="#4CAF50" stroke-width="3" fill="none" class="root-animation" style="animation-delay: 1s;"/>
+                                    <path d="M100,0 Q100,30 90,60 T80,90" stroke="#4CAF50" stroke-width="3" fill="none" class="root-animation" style="animation-delay: 1.2s;"/>
+                                    <path d="M100,0 Q100,30 110,60 T120,90" stroke="#4CAF50" stroke-width="3" fill="none" class="root-animation" style="animation-delay: 1.4s;"/>
+                                </svg>
+                            </div>
+                            
+                            <!-- Mist -->
+                            <div class="mist absolute bottom-0 left-0 w-full h-24" id="mistElement">
+                                <svg class="w-full h-full" viewBox="0 0 200 100">
+                                    <circle cx="30" cy="50" r="15" fill="#00BCD4" opacity="0.3" class="animate-pulse"/>
+                                    <circle cx="70" cy="30" r="20" fill="#00BCD4" opacity="0.3" class="animate-pulse" style="animation-delay: 0.5s;"/>
+                                    <circle cx="100" cy="60" r="18" fill="#00BCD4" opacity="0.3" class="animate-pulse" style="animation-delay: 1s;"/>
+                                    <circle cx="130" cy="40" r="22" fill="#00BCD4" opacity="0.3" class="animate-pulse" style="animation-delay: 1.5s;"/>
+                                    <circle cx="170" cy="55" r="16" fill="#00BCD4" opacity="0.3" class="animate-pulse" style="animation-delay: 2s;"/>
+                                </svg>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Benefits Section -->
+    <section id="benefits" class="py-20 bg-agri-dark">
+        <div class="container mx-auto px-6">
+            <h2 class="font-heading text-3xl md:text-4xl font-bold text-center mb-16">Why Choose AgriBlu</h2>
+            
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <!-- Card 1: Sustainable -->
+                <div class="bg-gray-900 rounded-xl p-6 border-2 border-gray-800 card-hover">
+                    <div class="w-16 h-16 bg-agri-green bg-opacity-20 rounded-full flex items-center justify-center mb-4">
+                        <i class="fas fa-water text-agri-green text-2xl"></i>
+                    </div>
+                    <h3 class="font-heading text-2xl font-bold mb-3">95% Less Water</h3>
+                    <p class="text-gray-400 mb-4">Our closed-loop system recycles water, drastically reducing your environmental footprint.</p>
+                    <div class="mt-4">
+                        <div class="flex items-center text-agri-green">
+                            <span class="mr-2">Water Efficiency</span>
+                            <i class="fas fa-arrow-up"></i>
+                        </div>
+                        <div class="w-full bg-gray-700 rounded-full h-2 mt-2">
+                            <div class="bg-agri-green h-2 rounded-full" style="width: 95%"></div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Card 2: Efficient -->
+                <div class="bg-gray-900 rounded-xl p-6 border-2 border-gray-800 card-hover">
+                    <div class="w-16 h-16 bg-agri-blue bg-opacity-20 rounded-full flex items-center justify-center mb-4">
+                        <i class="fas fa-bolt text-agri-blue text-2xl"></i>
+                    </div>
+                    <h3 class="font-heading text-2xl font-bold mb-3">3x Faster Growth</h3>
+                    <p class="text-gray-400 mb-4">Optimized nutrient delivery accelerates plant growth, enabling more harvest cycles per year.</p>
+                    <div class="mt-4">
+                        <div class="flex items-center text-agri-blue">
+                            <span class="mr-2">Growth Rate</span>
+                            <i class="fas fa-arrow-up"></i>
+                        </div>
+                        <div class="w-full bg-gray-700 rounded-full h-2 mt-2">
+                            <div class="bg-agri-blue h-2 rounded-full" style="width: 75%"></div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Card 3: Intelligent -->
+                <div class="bg-gray-900 rounded-xl p-6 border-2 border-gray-800 card-hover" id="smartControlCard">
+                    <div class="w-16 h-16 bg-agri-green bg-opacity-20 rounded-full flex items-center justify-center mb-4">
+                        <i class="fas fa-microchip text-agri-green text-2xl"></i>
+                    </div>
+                    <h3 class="font-heading text-2xl font-bold mb-3">Smart Control</h3>
+                    <p class="text-gray-400 mb-4">Monitor and manage every aspect of your grow environment from anywhere with our proprietary software.</p>
+                    <div class="mt-4 h-24">
+                        <svg class="w-full h-full line-graph" id="lineGraph" viewBox="0 0 200 80">
+                            <polyline points="10,70 50,50 90,60 130,20 170,40 190,10" stroke="#4CAF50" stroke-width="2" fill="none"/>
+                        </svg>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Contact Section -->
+    <section id="contact" class="py-20 bg-gray-900">
+        <div class="container mx-auto px-6">
+            <div class="max-w-4xl mx-auto">
+                <h2 class="font-heading text-3xl md:text-4xl font-bold text-center mb-4">Grow With Us</h2>
+                <p class="text-center text-gray-400 mb-12 max-w-2xl mx-auto">
+                    Get in touch to learn how AgriBlu can transform your agricultural operations.
+                </p>
+                
+                <div class="bg-agri-dark rounded-xl p-8 md:p-12 shadow-xl">
+                    <form id="contactForm" class="space-y-6">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div>
+                                <label for="fullName" class="block text-sm font-medium mb-2">Full Name</label>
+                                <input type="text" id="fullName" name="fullName" required class="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-agri-green focus:border-transparent">
+                            </div>
+                            <div>
+                                <label for="companyName" class="block text-sm font-medium mb-2">Company Name</label>
+                                <input type="text" id="companyName" name="companyName" required class="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-agri-green focus:border-transparent">
+                            </div>
+                        </div>
+                        
+                        <div>
+                            <label for="email" class="block text-sm font-medium mb-2">Email</label>
+                            <input type="email" id="email" name="email" required class="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-agri-green focus:border-transparent">
+                        </div>
+                        
+                        <div>
+                            <label for="message" class="block text-sm font-medium mb-2">Message</label>
+                            <textarea id="message" name="message" rows="4" required class="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-agri-green focus:border-transparent"></textarea>
+                        </div>
+                        
+                        <div class="text-center">
+                            <button type="submit" class="bg-agri-green hover:bg-green-600 text-white font-medium py-3 px-8 rounded-full transition-all duration-300 transform hover:scale-105 btn-pulse">
+                                Submit Inquiry
+                            </button>
+                        </div>
+                    </form>
+                    
+                    <div id="formMessage" class="mt-6 text-center hidden">
+                        <div class="inline-flex items-center px-4 py-2 bg-agri-green bg-opacity-20 text-agri-green rounded-lg">
+                            <i class="fas fa-check-circle mr-2"></i>
+                            <span>Thank you for your inquiry! We'll be in touch soon.</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Footer -->
+    <footer class="py-8 bg-agri-dark border-t border-gray-800">
+        <div class="container mx-auto px-6">
+            <div class="flex flex-col md:flex-row justify-between items-center">
+                <div class="flex items-center space-x-2 mb-4 md:mb-0">
+                    <div class="w-8 h-8 rounded-full bg-gradient-to-br from-agri-green to-agri-blue flex items-center justify-center">
+                        <i class="fas fa-seedling text-white text-sm"></i>
+                    </div>
+                    <span class="font-heading text-lg font-bold text-white">AgriBlu</span>
+                </div>
+                
+                <div class="text-gray-400 text-sm">
+                    &copy; 2023 AgriBlu. All rights reserved.
+                </div>
+                
+                <div class="flex space-x-4 mt-4 md:mt-0">
+                    <a href="#" class="text-gray-400 hover:text-agri-green transition-colors duration-300">
+                        <i class="fab fa-twitter"></i>
+                    </a>
+                    <a href="#" class="text-gray-400 hover:text-agri-green transition-colors duration-300">
+                        <i class="fab fa-linkedin"></i>
+                    </a>
+                    <a href="#" class="text-gray-400 hover:text-agri-green transition-colors duration-300">
+                        <i class="fab fa-instagram"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </footer>
+    
+    <script>
+        // Create animated background lines for hero section
+        function createFlowLines() {
+            const heroAnimation = document.getElementById('heroAnimation');
+            const lineCount = 15;
+            
+            for (let i = 0; i < lineCount; i++) {
+                const line = document.createElement('div');
+                line.className = 'flow-line';
+                line.style.left = `${Math.random() * 100}%`;
+                line.style.animationDelay = `${Math.random() * 15}s`;
+                line.style.animationDuration = `${15 + Math.random() * 10}s`;
+                heroAnimation.appendChild(line);
+            }
+        }
+        
+        // Mobile menu toggle
+        document.getElementById('mobileMenuBtn').addEventListener('click', function() {
+            const mobileMenu = document.getElementById('mobileMenu');
+            mobileMenu.classList.toggle('hidden');
+        });
+        
+        // Smooth scrolling for navigation links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    window.scrollTo({
+                        top: target.offsetTop - 80,
+                        behavior: 'smooth'
+                    });
+                    
+                    // Close mobile menu if open
+                    document.getElementById('mobileMenu').classList.add('hidden');
+                }
+            });
+        });
+        
+        // Animate mist when technology section is in view
+        const observerOptions = {
+            root: null,
+            rootMargin: '0px',
+            threshold: 0.3
+        };
+        
+        const mistObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    document.getElementById('mistElement').classList.add('visible');
+                }
+            });
+        }, observerOptions);
+        
+        const rootAnimationContainer = document.getElementById('rootAnimationContainer');
+        if (rootAnimationContainer) {
+            mistObserver.observe(rootAnimationContainer);
+        }
+        
+        // Animate line graph on hover for Smart Control card
+        const smartControlCard = document.getElementById('smartControlCard');
+        const lineGraph = document.getElementById('lineGraph');
+        
+        if (smartControlCard && lineGraph) {
+            smartControlCard.addEventListener('mouseenter', () => {
+                lineGraph.classList.add('animate');
+            });
+            
+            smartControlCard.addEventListener('mouseleave', () => {
+                lineGraph.classList.remove('animate');
+            });
+        }
+        
+        // Handle form submission
+        const contactForm = document.getElementById('contactForm');
+        const formMessage = document.getElementById('formMessage');
+        
+        if (contactForm) {
+            contactForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                // In a real implementation, you would send the form data to a server here
+                // For this demo, we'll just show the success message
+                
+                // Show success message
+                formMessage.classList.remove('hidden');
+                
+                // Reset form
+                contactForm.reset();
+                
+                // Hide message after 5 seconds
+                setTimeout(() => {
+                    formMessage.classList.add('hidden');
+                }, 5000);
+            });
+        }
+        
+        // Initialize animations on page load
+        window.addEventListener('load', () => {
+            createFlowLines();
+        });
+        
+        // Add scroll effect to navigation
+        window.addEventListener('scroll', () => {
+            const header = document.querySelector('header');
+            if (window.scrollY > 50) {
+                header.classList.add('shadow-lg');
+            } else {
+                header.classList.remove('shadow-lg');
+            }
+        });
+    </script>
+</body>
+</html>
